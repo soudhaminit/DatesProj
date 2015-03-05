@@ -1,0 +1,258 @@
+<! DOCTYPE html>
+<html>
+    <head>
+        <title>Days Calculation</title>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script type="text/javascript" src="scripts/jquery.min.js"></script>
+
+         <style>
+    body{
+    margin: 0px;
+    font-family: Verdana, Geneva, sans-serif;    
+    }
+    .fixed{
+    width:600px;
+    margin: 0 auto;     
+    }
+    input{
+    width: 300px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    margin-top: 5px;    
+    }
+    label{
+    padding: 15px 0;    
+    float: left;
+    width: 200px;    
+    } 
+    #submitbtn{
+    width: 100px;
+    margin-left: 200px;    
+    }
+    #error{
+    color: red;
+    padding: 10px 0 10px 20px;
+    margin-left: 179px;    
+    } 
+    #result{
+    color: green;
+    font-weight: bold;  
+    }
+    #mandatory{
+    color: red;
+    }         
+    </style>
+    </head>
+    <body>
+        <div class="fixed">
+            <form id="datesform">
+                <p>Please enter the Start date and End date in the range of 1900 and 2010 to calculate the days</p>
+                <div id="error"></div>
+                <label for="startDate"><span id="mandatory">*</span>Start Date </label>    
+                <input type="text" id="startDate" size="15" maxlength="10" name="startDate" placeholder="DD MM YYYY"/>
+                <label for="endDate"><span id="mandatory">*</span>End Date </label>       
+                <input type="text" id="endDate" size="15" maxlength="10" name="endDate" placeholder="DD MM YYYY"/>
+                <p>Difference of days:  <span id="result"></span> </p>  
+                <input id="submitbtn"  type="submit" value="Submit"/>
+            </form>
+        
+        </div>
+        
+        
+        
+       <script type="text/javascript">
+            $(document).ready(function(){
+                
+                var errorMsg="";
+                var spaceAfter2d="\\d{2}\\s";
+                var spaceAfter4d="\\s\\d{4}$";
+                var yearRange= "19[0-9][0-9]|200[0-9]|2010$";
+                var monthRange="(0[1-9]|1[0-2])\\s\\d{4}$";
+                var dateRange="^0[1-9]|[1-2][0-9]|3[0-1]";    
+                //var dateDDMMYYYRegex ="(((0[1-9]|[1-2][0-9]|3[0-1])[\\s](01|03|05|07|08|10|12))|((0[1-9]|[1-2][0-9]|30])[\\s](04|06|09|11)))[\\s](19[0-9][0-9]|200[0-9]|2010)" ;
+                //match date in format DD MM YYYY
+               var dateDDMMYYYRegex ="(0[1-9]|[1-2][0-9]|3[0-1])[\\s](0[1-9]|1[0-2])[\\s](19[0-9][0-9]|200[0-9]|2010)" ; 
+               
+                function validDayDate(input){
+                    var dt=input;
+                    var dayDate=parseInt(dt.substring(0,2));
+                    var mon=parseInt(dt.substring(3,5));
+                    var yr=parseInt(dt.substring(6));
+                    var monArray=[31,28,31,30,31,30,31,31,30,31,30,31];
+                    if(yr%4==0) monArray[1]=29;
+                    if(dayDate<=monArray[mon-1]){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                    
+                }
+                
+                
+                $("#startDate").focusout(function(){
+                     var  stDt=$("#startDate").val();
+                     
+                     if(stDt.length==0){
+                          errorMsg="Pl enter the Start Date";
+                     }else if(stDt.length<10){
+                         errorMsg="Pl enter the complete Start Date";
+                     }else if(!stDt.match(spaceAfter2d)){
+                        errorMsg="Pl provide the space after DD in Start Date";
+                    }else if(!stDt.match(spaceAfter4d)){
+                        errorMsg="Pl provide the space after MM in Start Date";
+                    }else if(!stDt.match(yearRange)){
+                        errorMsg="Pl provide the Start year in the range of 1900 and 2010";
+                   }else if(!stDt.match(dateDDMMYYYRegex)){
+                        errorMsg="Invalid Start Date";
+                   }else if(!validDayDate(stDt)){
+                        errorMsg="Invalid Start Day Date with respect to month";
+                   }else{
+                        errorMsg="";    
+                   }
+                
+                    if(errorMsg==""){
+                      $("#error").html("");
+                    }else{
+                      $("#error").html(errorMsg);
+                    }   
+                });
+                
+                $("#startDate").focusin(function(){
+                    $("#error").html("");
+                });
+                
+            $("#endDate").focusout(function(){
+                     var  endDt=$("#endDate").val();
+                    
+                     if(endDt.length==0){
+                          errorMsg="Pl enter the End Date";
+                     }else if(endDt.length<10){
+                         errorMsg="Pl enter the complete End Date";
+                     }else if(!endDt.match(spaceAfter2d)){
+                         errorMsg="Pl provide the space after DD in End Date";
+                    }else if(!endDt.match(spaceAfter4d)){
+                         errorMsg="Pl provide the space after MM in End Date";
+                    }else if(!endDt.match(yearRange)){
+                         errorMsg="Pl provide the End year in the range of 1900 and 2010 of End year";
+                   }else if(!endDt.match(dateDDMMYYYRegex)){
+                         errorMsg="Invalid End Date";
+                   }else if(!validDayDate(endDt)){
+                         errorMsg="Invalid End Day Date with respect to the year";
+                   } else{
+                        errorMsg="";    
+                   }
+                
+                if(errorMsg==""){
+                  $("#error").html("");
+                }else{
+                  $("#error").html(errorMsg);
+                } 
+                });
+                
+                $("#endDate").focusin(function(){
+                    $("#error").html("");
+                });
+             
+            });
+           
+    $("#datesform").submit(function(event){
+        var errorMsg="";
+        event.preventDefault();
+        var  stDt=$("#startDate").val();
+        var  endDt=$("#endDate").val();
+        
+        
+        var  stDayDate=parseInt(stDt.substring(0,2));
+        var  stMon=parseInt(stDt.substring(3,5));
+        var  stYr=parseInt(stDt.substring(6));
+        
+        var  endDayDate=parseInt(endDt.substring(0,2));
+        var  endMon=parseInt(endDt.substring(3,5));
+        var  endYr=parseInt(endDt.substring(6));
+        
+        
+        var stMonArray=[31,28,31,30,31,30,31,31,30,31,30,31];
+        var endMonArray=[31,28,31,30,31,30,31,31,30,31,30,31];
+        if(stYr%4==0) stMonArray[1]=29;
+        if(endYr%4==0) endMonArray[1]=29;
+        if(stDt.length<10 | endDt.length<10){
+            errorMsg="Please provide the dates" ;
+        }else if(stYr <= endYr){
+               if(stYr == endYr && stMon>endMon){
+                  errorMsg="Start Month has to be earlier than the End Month" ;
+                }else if(stYr == endYr && stMon == endMon && stDayDate>endDayDate){
+                  errorMsg="Start Day Date has to be earlier than the End Day Date" ;
+                }
+        }else{
+           errorMsg="Start Year has to be earlier than the End Year" ;
+        }
+        
+         if(errorMsg==""){
+             var totDays=0;
+             $("#error").html("");
+             if(stYr == endYr){
+                 if(stMon == endMon){
+                    totDays=endDayDate-stDayDate;   
+                 }else{
+                     var i=0,j=stMon+0;
+                     while(i<=(endMon-stMon)){
+                        if(i==0){ 
+                            totDays=stMonArray[stMon-1]-stDayDate;
+                        }
+                        if(i!=0 && i<(endMon-stMon)){
+                            totDays=totDays+stMonArray[j];
+                            j++;
+                        }
+                        if(i==(endMon-stMon)){
+                            totDays=totDays+endDayDate;
+                        } 
+                         i++;
+                     }//end of while loop
+                 }
+                 
+             }else{
+                     var i=0,j=stMon+0;
+                     while(i<=(12-stMon)){
+                        if(i==0){ 
+                            totDays=stMonArray[stMon-1]-stDayDate;
+                        }
+                        if(i!=0 && i<=(12-stMon)){
+                            totDays=totDays+stMonArray[j];
+                            j++;
+                        }
+                         i++;
+                     }//end of while loop
+                 
+                     if(endMon==01){
+                        totDays=totDays+endDayDate;    
+                     }else{
+                        i=0,j=01+0;
+                        while(i<=(endMon-01)){
+                            if(i==0){ 
+                                totDays=totDays+endMonArray[0];
+                            }
+                            if(i!=0 && i<(endMon-01)){
+                                totDays=totDays+endMonArray[j];
+                                j++;
+                            }
+                            if(i==(endMon-01)){
+                                totDays=totDays+endDayDate;
+                            } 
+                            i++;
+                        }//end of while loop
+                     }
+                 
+                 } 
+           $("#result").html(totDays);     
+        }else{
+          $("#error").html(errorMsg);
+        }
+});    
+       </script>
+    </body>
+</html>
