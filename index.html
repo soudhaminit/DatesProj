@@ -227,7 +227,14 @@
                         }
                          i++;
                      }//end of while loop
-                 
+                     var k=stYr+1;
+                     while(k<endYr){
+                         if(k%4==0)totDays=totDays+366;
+                         else totDays=totDays+365;
+                         k++;
+                     }
+                 if(k == endYr ){
+                     
                      if(endMon==01){
                         totDays=totDays+endDayDate;    
                      }else{
@@ -246,7 +253,7 @@
                             i++;
                         }//end of while loop
                      }
-                 
+                 }
                  } 
            $("#result").html(totDays);     
         }else{
